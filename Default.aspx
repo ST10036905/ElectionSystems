@@ -51,7 +51,7 @@
                 <!-- Candidate 1 -->
                 <div class="col-md-4">
                     <div class="card shadow-sm h-100">
-                        <img src="candidate_1.jpg" class="card-img-top" alt="John Doe">
+                        <img src="SampleCandidates/candidate_1.jpg" class="card-img-top" alt="John Doe">
                         <div class="card-body text-center">
                             <h5 class="card-title fw-bold">Jane Smith</h5>
                             <p class="card-text">An experienced leader advocating for innovation and community growth.</p>
@@ -66,7 +66,7 @@
                 <!-- Candidate 2 -->
                 <div class="col-md-4">
                     <div class="card shadow-sm h-100">
-                        <img src="candidate_2.jpg" class="card-img-top" alt="John Doe">
+                        <img src="SampleCandidates/candidate_2.jpg" class="card-img-top" alt="John Doe">
                         <div class="card-body text-center">
                             <h5 class="card-title fw-bold">John Doe</h5>
                             <p class="card-text">A visionary with a focus on environmental sustainability and education.</p>
@@ -81,7 +81,7 @@
                 <!-- Candidate 3 -->
                 <div class="col-md-4">
                     <div class="card shadow-sm h-100">
-                        <img src="candidate_3.jpg" class="card-img-top" alt="Alex Johnson">
+                        <img src="SampleCandidates/candidate_3.jpg" class="card-img-top" alt="Alex Johnson">
                         <div class="card-body text-center">
                             <h5 class="card-title fw-bold">Alex Johnson</h5>
                             <p class="card-text">A dedicated advocate for economic development and social equality.</p>

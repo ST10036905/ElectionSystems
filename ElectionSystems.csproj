@@ -100,9 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
-    <Content Include="candidate_1.jpg" />
-    <Content Include="candidate_2.jpg" />
-    <Content Include="candidate_3.jpg" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -125,6 +122,12 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="MyCSS\StyleSheet.css" />
+    <Content Include="SampleCandidates\candidate_1.jpg" />
+    <Content Include="SampleCandidates\candidate_2.jpg" />
+    <Content Include="SampleCandidates\candidate_3.jpg" />
+    <Content Include="SampleCandidates\facebook.jpg" />
+    <Content Include="SampleCandidates\instagram.jpg" />
+    <Content Include="SampleCandidates\twitter.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
