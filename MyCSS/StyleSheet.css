@@ -38,14 +38,13 @@
 [data-bs-theme=dark] {
     --bs-body-bg: #1a1a1a;
     --bs-body-color: #eceeef;
-    --bs-primary: #4EA3E2; 
+    --bs-primary: #4EA3E2;
     --bs-secondary: #343a40;
-    --bs-info: #337BAC; 
-    --bs-danger: #D53527; 
+    --bs-info: #337BAC;
+    --bs-danger: #D53527;
     --bs-light: #343a40;
     --bs-dark: #1a1a1a;
 }
-
 *,
 *::before,
 *::after {
@@ -405,7 +404,8 @@ legend + * {
 ::-webkit-datetime-edit-hour-field,
 ::-webkit-datetime-edit-day-field,
 ::-webkit-datetime-edit-month-field,
-::-webkit-datetime-edit-year-field {
+::-webkit-datetime-edit-year-field
+{
     padding: 0;
 }
 
@@ -4666,19 +4666,13 @@ textarea.form-control-lg {
     --bs-card-spacer-y: 1rem;
     --bs-card-spacer-x: 1rem;
     --bs-card-title-spacer-y: 0.5rem;
-    --bs-card-title-color:;
-    --bs-card-subtitle-color:;
     --bs-card-border-width: var(--bs-border-width);
     --bs-card-border-color: var(--bs-border-color-translucent);
     --bs-card-border-radius: var(--bs-border-radius);
-    --bs-card-box-shadow:;
     --bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));
     --bs-card-cap-padding-y: 0.5rem;
     --bs-card-cap-padding-x: 1rem;
     --bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);
-    --bs-card-cap-color:;
-    --bs-card-height:;
-    --bs-card-color:;
     --bs-card-bg: var(--bs-body-bg);
     --bs-card-img-overlay-padding: 1rem;
     --bs-card-group-margin: 0.75rem;

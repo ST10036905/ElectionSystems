@@ -1,11 +1,8 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ElectionSystems._Default" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-          integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
-          crossorigin="anonymous">
-
+ <!-- My style sheet-->
+ <link rel="stylesheet" href="~/MyCSS/StyleSheet.css" />
     <main class="container py-5">
         <!-- Hero Section -->
         <section class="text-center bg-primary text-white p-5 rounded-3 mb-5">

@@ -1,13 +1,11 @@
 ﻿<%@ Page Title="About" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="About.aspx.cs" Inherits="ElectionSystems.About" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-          integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
-          crossorigin="anonymous">
-    
+ <!-- My style sheet-->
+ <link rel="stylesheet" href="~/MyCSS/StyleSheet.css" />
     <main class="container py-5">
         <section class="text-center mb-5">
-            <h1 class="display-4 fw-bold text-primary">About Us</h1>
+            <h1 class="display-4 fw-bold text-primary">About page</h1>
             <p class="lead">Learn more about our mission, values, and the purpose behind this application.</p>
         </section>
 
@@ -15,7 +13,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title text-secondary fw-bold">Our Vision</h5>
+                        <h5 class="card-title text-secondary fw-bold">Vision</h5>
                         <p class="card-text">We aim to empower democracy through innovative technology, ensuring secure, transparent, and seamless elections for all. Our platform is built to make election processes simple and accessible for everyone.</p>
                     </div>
                 </div>
@@ -24,7 +22,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title text-secondary fw-bold">What We Offer</h5>
+                        <h5 class="card-title text-secondary fw-bold">What is offered</h5>
                         <ul class="list-unstyled">
                             <li><i class="bi bi-check-circle-fill text-success"></i> Secure and efficient election management</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i> Real-time poll results</li>
@@ -35,7 +33,7 @@
             </div>
         </section>
 
-            <h2 class="text-center fw-bold text-primary mb-4">Why choose ss?</h2>
+            <h2 class="text-center fw-bold text-primary mb-4">Why choose us?</h2>
             <div class="row text-center">
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm">
@@ -68,8 +66,8 @@
                 </div>
             </div>
     </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
-            crossorigin="anonymous"></script>
-</asp:Content>
+     <!-- Bootstrap JS Bundle -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+         crossorigin="anonymous"></script>
+ </asp:content>
