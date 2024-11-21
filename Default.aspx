@@ -25,8 +25,8 @@
                  <div class="card shadow-sm h-100">
                      <div class="card-body">
                          <h2 class="card-title h5">Login</h2>
-                         <p class="card-text">Sign in to view results or participate in the election process.</p>
-                         <a href="#login" class="btn btn-outline-primary">Login &raquo;</a>
+                         <p class="card-text">Sign in to participate in the election process.</p>
+                         <a href="Login.aspx" class="btn btn-outline-primary">Login &raquo;</a>
                      </div>
                  </div>
              </div>
@@ -43,7 +43,7 @@
 
         <!-- Meet the Candidates Section -->
         <section class="mb-5">
-            <h2 class="text-center fw-bold mb-4">Meet the Candidates</h2>
+            <h2 class="text-center fw-bold mb-4">Meet the candidates</h2>
             <div class="row g-4">
                 <!-- Candidate 1 -->
                 <div class="col-md-4">

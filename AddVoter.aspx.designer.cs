@@ -11,7 +11,7 @@ namespace ElectionSystems
 {
 
 
-    public partial class Login
+    public partial class AddVoter
     {
 
         /// <summary>
@@ -33,6 +33,24 @@ namespace ElectionSystems
         protected global::System.Web.UI.WebControls.TextBox EmailTxtBox;
 
         /// <summary>
+        /// NameTxtBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox NameTxtBox;
+
+        /// <summary>
+        /// AgeTxtBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox AgeTxtBox;
+
+        /// <summary>
         /// PasswordTxtBox control.
         /// </summary>
         /// <remarks>
@@ -42,13 +60,31 @@ namespace ElectionSystems
         protected global::System.Web.UI.WebControls.TextBox PasswordTxtBox;
 
         /// <summary>
-        /// ErrorMessageLabel control.
+        /// ConfirmPasswordTxtBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label ErrorMessageLabel;
+        protected global::System.Web.UI.WebControls.TextBox ConfirmPasswordTxtBox;
+
+        /// <summary>
+        /// ReEnterPasswordTxtBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ReEnterPasswordTxtBox;
+
+        /// <summary>
+        /// AddressTxtBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox AddressTxtBox;
 
         /// <summary>
         /// SucessMessageLabel control.
@@ -60,13 +96,22 @@ namespace ElectionSystems
         protected global::System.Web.UI.WebControls.Label SucessMessageLabel;
 
         /// <summary>
-        /// LoginBtn control.
+        /// ErrorMessageLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button LoginBtn;
+        protected global::System.Web.UI.WebControls.Label ErrorMessageLabel;
+
+        /// <summary>
+        /// SaveBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button SaveBtn;
 
         /// <summary>
         /// CancelBtn control.
@@ -76,14 +121,5 @@ namespace ElectionSystems
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button CancelBtn;
-
-        /// <summary>
-        /// CreateAccountLink control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink CreateAccountLink;
     }
 }

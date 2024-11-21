@@ -11,7 +11,7 @@ namespace ElectionSystems
 {
 
 
-    public partial class Login
+    public partial class AddCandidate
     {
 
         /// <summary>
@@ -24,22 +24,31 @@ namespace ElectionSystems
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// EmailTxtBox control.
+        /// CandidateName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EmailTxtBox;
+        protected global::System.Web.UI.WebControls.TextBox CandidateName;
 
         /// <summary>
-        /// PasswordTxtBox control.
+        /// Description control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox PasswordTxtBox;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea Description;
+
+        /// <summary>
+        /// CandidateImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputFile CandidateImage;
 
         /// <summary>
         /// ErrorMessageLabel control.
@@ -60,13 +69,13 @@ namespace ElectionSystems
         protected global::System.Web.UI.WebControls.Label SucessMessageLabel;
 
         /// <summary>
-        /// LoginBtn control.
+        /// SubmitBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button LoginBtn;
+        protected global::System.Web.UI.WebControls.Button SubmitBtn;
 
         /// <summary>
         /// CancelBtn control.
@@ -76,14 +85,5 @@ namespace ElectionSystems
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button CancelBtn;
-
-        /// <summary>
-        /// CreateAccountLink control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink CreateAccountLink;
     }
 }

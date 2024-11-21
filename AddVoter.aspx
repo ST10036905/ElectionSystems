@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Register.aspx.cs" Inherits="ElectionSystems.Register" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddVoter.aspx.cs" Inherits="ElectionSystems.AddVoter" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -105,7 +105,7 @@
 <body>
     <form id="form1" runat="server">
         <div class="register-container">
-            <h1>Electoral Systems Registration Form</h1>
+            <h1>Voters Registration Form</h1>
             <label for="EmailTxtBox">E-mail:</label>
             <asp:TextBox ID="EmailTxtBox" runat="server" placeholder="Enter email" TextMode="Email"></asp:TextBox>
 
@@ -115,15 +115,14 @@
             <label for="AgeTxtBox">Age:</label>
             <asp:TextBox ID="AgeTxtBox" runat="server" type="number" placeholder="Enter age"></asp:TextBox>
 
-            <label for="DropDownListRole">Role:</label>
-            <asp:DropDownList ID="DropDownListRole" runat="server">
-                <asp:ListItem Text="Select Role" Value="" />
-                <asp:ListItem Text="Comission member" Value="Employee" />
-                <asp:ListItem Text="Voter" Value="Voter" />
-            </asp:DropDownList>
-
             <label for="PasswordTxtBox">Password:</label>
             <asp:TextBox ID="PasswordTxtBox" runat="server" type="password" placeholder="Enter password"></asp:TextBox>
+
+
+            <label for="ConfirmPasswordTxtBox" class="form-label">Confirm Password:</label>
+            <asp:TextBox ID="ConfirmPasswordTxtBox" type="password" runat="server" CssClass="form-control" Width="100%" TextMode="Password"></asp:TextBox>
+
+                     
 
             <label for="ReEnterPasswordTxtBox">Re-enter Password:</label>
             <asp:TextBox ID="ReEnterPasswordTxtBox" runat="server" type="password" placeholder="Enter password"></asp:TextBox>
@@ -144,4 +143,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
-

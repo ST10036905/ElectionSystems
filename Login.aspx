@@ -116,7 +116,7 @@
         <div class="login-container">
             <h1>Login to your account</h1>
             <label for="UsernameTxtBox">Username:</label>
-            <asp:TextBox ID="UsernameTxtBox" runat="server" placeholder="Enter your username"></asp:TextBox>
+            <asp:TextBox ID="EmailTxtBox" runat="server" placeholder="Enter your email"></asp:TextBox>
 
             <label for="PasswordTxtBox">Password:</label>
             <asp:TextBox ID="PasswordTxtBox" type="password" runat="server" placeholder="Enter your password"></asp:TextBox>
@@ -127,7 +127,7 @@
 
             <div class="button-container">
                 <asp:Button ID="LoginBtn" runat="server" Text="Login" CssClass="asp-button" OnClick="LoginBtn_Click" />
-                <asp:Button ID="CancelBtn" runat="server" Text="Cancel" CssClass="asp-button" OnClick="CancelBtn_Click" />
+                <asp:Button ID="CancelBtn" runat="server" Text="Cancel" CssClass="asp-button cancel-button" OnClick="CancelBtn_Click" />
             </div>
 
             <div class="create-account">
