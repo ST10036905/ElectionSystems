@@ -118,12 +118,6 @@
             <label for="PasswordTxtBox">Password:</label>
             <asp:TextBox ID="PasswordTxtBox" runat="server" type="password" placeholder="Enter password"></asp:TextBox>
 
-
-            <label for="ConfirmPasswordTxtBox" class="form-label">Confirm Password:</label>
-            <asp:TextBox ID="ConfirmPasswordTxtBox" type="password" runat="server" CssClass="form-control" Width="100%" TextMode="Password"></asp:TextBox>
-
-                     
-
             <label for="ReEnterPasswordTxtBox">Re-enter Password:</label>
             <asp:TextBox ID="ReEnterPasswordTxtBox" runat="server" type="password" placeholder="Enter password"></asp:TextBox>
             

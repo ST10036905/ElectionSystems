@@ -23,11 +23,11 @@ namespace ElectionSystems
 
         protected void Page_Load(object sender, EventArgs e) { }
 
-        protected void RegisterBtn_Click(object sender, EventArgs e)
+        protected void SaveBtn_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(NameTxtBox.Text) || 
                 string.IsNullOrEmpty(PasswordTxtBox.Text) ||
-                string.IsNullOrEmpty(ConfirmPasswordTxtBox.Text) ||
+                string.IsNullOrEmpty(ReEnterPasswordTxtBox.Text) ||
                 string.IsNullOrEmpty(EmailTxtBox.Text) ||
                 string.IsNullOrEmpty(AddressTxtBox.Text))
             {
@@ -40,7 +40,7 @@ namespace ElectionSystems
             voterData.Address = AddressTxtBox.Text;
             voterData.SetPassword(PasswordTxtBox.Text);
 
-            if (!voterData.VerifyPassword(ConfirmPasswordTxtBox.Text))
+            if (!voterData.VerifyPassword(ReEnterPasswordTxtBox.Text))
             {
                 ErrorMessageLabel.Text = "Password does not match.";
                 return;
@@ -49,8 +49,10 @@ namespace ElectionSystems
             SaveVoterData(voterData.Name, voterData.Email, voterData.Address, voterData.Password, voterData.Role);
 
             SucessMessageLabel.Text = "Voter registration successful.";
-            string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 5000);";
+            string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 3000);";
             ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
+
+            Response.Redirect("MemberDashboard.aspx");
         }
 
         public void SaveVoterData(string name, string email, string address, string password,string role)
@@ -62,7 +64,7 @@ namespace ElectionSystems
                     conn.Open();
                     using (SqlTransaction transaction = conn.BeginTransaction())
                     {
-                        string voterQuery = "INSERT INTO Voter (Name, Email, Address, Password, Contact, Role) VALUES (@Name, @Email, @Address, @Password, @Contact, @Role)";
+                        string voterQuery = "INSERT INTO Voter (Name, Password, Email, Address, Role) VALUES (@Name,@Password, @Email, @Address, @Role)";
                         using (SqlCommand voterCommand = new SqlCommand(voterQuery, conn, transaction))
                         {
                             voterCommand.Parameters.AddWithValue("@Name", name);
@@ -84,7 +86,6 @@ namespace ElectionSystems
 
                         transaction.Commit();
                     }
-                    Response.Redirect("Login.aspx");
                 }
             }
             catch (Exception ex)
@@ -97,7 +98,7 @@ namespace ElectionSystems
         {
             NameTxtBox.Text = "";
             PasswordTxtBox.Text = "";
-            ConfirmPasswordTxtBox.Text = "";
+            ReEnterPasswordTxtBox.Text = "";
             EmailTxtBox.Text = "";
             AddressTxtBox.Text = "";
 

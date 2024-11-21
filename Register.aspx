@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Register</title>
+    <title>Admin Register</title>
     <!-- My style sheet link -->
     <link rel="stylesheet" href="~/MyCSS/StyleSheet.css" />
 
@@ -118,7 +118,7 @@
             <label for="DropDownListRole">Role:</label>
             <asp:DropDownList ID="DropDownListRole" runat="server">
                 <asp:ListItem Text="Select Role" Value="" />
-                <asp:ListItem Text="Comission member" Value="Employee" />
+                <asp:ListItem Text="Commissioner" Value="Commissioner" />
                 <asp:ListItem Text="Voter" Value="Voter" />
             </asp:DropDownList>
 

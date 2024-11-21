@@ -84,9 +84,9 @@ namespace ElectionSystems
             //calling the RegisterQuery method after getting the data
             RegisterQuery(userData.Email,  userData.Name, userData.Age, userData.Role, userData.Password, userData.Address);
 
-            // Using a startup script to redirect after 5 seconds
+            // Using a startup script to redirect after 2 seconds
             SucessMessageLabel.Text = "Registration succesful....Loading";
-            string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 5000);";
+            string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 2000);";
             ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
         }//_______________________________________________________________________________________________________________
 
@@ -141,7 +141,7 @@ namespace ElectionSystems
                             // Executing the connection
                             userCommand.ExecuteNonQuery();
                         }
-
+                        transaction.Commit();
                     }
                 }
             }

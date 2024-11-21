@@ -51,7 +51,7 @@ namespace ElectionSystems
                     {
                         Session["VoterId"] = userDetail.Value.UserId;
 
-                        // Using a startup script to redirect after 5 seconds
+                        // Using a startup script to redirect after 2 seconds
                         SucessMessageLabel.Text = "Login succesful...Redirecting voter";
                         string script = "setTimeout(function(){ window.location = 'Vote.aspx'; }, 2000);";
                         ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
@@ -59,9 +59,9 @@ namespace ElectionSystems
                     }
                     else if (userDetail.Value.Role == "Commissioner")
                     {
-                        Session["CommissioneId"] = userDetail.Value.UserId;
+                        Session["CommissionerId"] = userDetail.Value.UserId;
 
-                        // Using a startup script to redirect after 5 seconds
+                        // Using a startup script to redirect after 2 seconds
                         SucessMessageLabel.Text = "Welcome back :) Redirecting.......";
                         string script = "setTimeout(function(){ window.location = 'MemberDashboard.aspx'; }, 2000);";
                         ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
@@ -96,9 +96,9 @@ namespace ElectionSystems
                 {
                     connection.Open();
                     string query = @"
-                        SELECT CommissionerId AS UserId, 'Commissioner member' AS Role, Password 
+                        SELECT CommissionerId AS UserId, 'Commissioner' AS Role, Password 
                         FROM Commissioner 
-                        WHERE Name = @Name
+                        WHERE Email = @Email
                         UNION ALL 
                         SELECT VoterId AS UserId, 'Voter' AS Role, Password 
                         FROM Voter 
