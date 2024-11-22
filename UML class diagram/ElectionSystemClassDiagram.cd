@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ElectionSystems.User">
+    <Position X="1" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAEAAAAEEAAAAQAAAAAAAACAAAAgAAAAAA=</HashCode>
+      <FileName>Classes\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.Classes.Voter">
+    <Position X="2.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAEAAAAEEACAAQAAAAAAAACAAAAgAAAAAA=</HashCode>
+      <FileName>Classes\Voter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.About">
+    <Position X="11.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>About.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.AddCandidate">
+    <Position X="4.5" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAQAgAChAAAAMAAAAIQAAAAAEAAAAAEMAARA=</HashCode>
+      <FileName>AddCandidate.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.AddVoter">
+    <Position X="7" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EABAAAAAQAAoACAAQAAEACAEIQAgAEAAAAAABEIAAQA=</HashCode>
+      <FileName>AddVoter.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.Contact">
+    <Position X="11.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Contact.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems._Default">
+    <Position X="11.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Default.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.Login">
+    <Position X="3.75" Y="5.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>gAgAAAAAAAAAAAgAQgAEBAAAIQAAAEAAAAEIAEIAIQA=</HashCode>
+      <FileName>Login.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MongoDBHelper">
+    <Position X="11.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAgAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Login.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.MemberDashboard">
+    <Position X="9.25" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgBAAAEAAgCAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>MemberDashboard.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.Register">
+    <Position X="0.75" Y="5.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>EAhAAAAAAAAoACJgQgAEACAAIQAgAEAAAAAABEIAAQA=</HashCode>
+      <FileName>Register.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElectionSystems.Vote">
+    <Position X="6.75" Y="6.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAIACgAAAAEAAAAAQAAAAAAAEAAIAIAAAA=</HashCode>
+      <FileName>Vote.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
