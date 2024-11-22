@@ -96,9 +96,71 @@
         </section>
     </main>
 
+     <!-- Hidden Thank You Message -->
+    <div id="thankYouMessage" style="display: none;">
+        <p class="alert alert-success">Thank you for your vote! Your vote has been submitted successfully.</p>
+    </div>
         <!-- Error and Success Messages -->
     <asp:Label ID="ErrorMessageLabel" runat="server" ForeColor="Red" CssClass="error-message"></asp:Label>
     <asp:Label ID="SucessMessageLabel" runat="server" ForeColor="Green" CssClass="success-message"></asp:Label>
+
+    <script>
+        function vote(candidateName, button) {
+            // Check if the user is logged in (you can check it with ASP.NET Identity or session)
+            var isLoggedIn = <%: User.Identity.IsAuthenticated ? "true" : "false" %>;
+
+            // If the user is not logged in, show error message
+            if (!isLoggedIn) {
+                document.getElementById('ErrorMessageLabel').innerText = "You must be logged in to vote.";
+                return;
+            }
+
+            // Disable the button after voting
+            button.disabled = true;
+
+            // Make an AJAX request to save the vote
+            fetch('/Vote.aspx/VoteForCandidate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ candidateName: candidateName })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Display a success message and redirect to the home page
+                        document.getElementById('SuccessMessageLabel').innerText = "Thank you for your vote! You will be redirected to the homepage.";
+                        setTimeout(function () {
+                            window.location.href = '/Default.aspx';  // Change to your homepage URL
+                        }, 2000);
+                    } else {
+                        // Display error if something went wrong
+                        document.getElementById('ErrorMessageLabel').innerText = 'There was an error submitting your vote.';
+                    }
+                });
+        }
+
+        function updateVoteProgress(candidateName) {
+            // Fetch the updated vote counts for all candidates (or just the selected one)
+            fetch('/Vote.aspx/GetVoteCount', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Find the candidate's progress bar by ID
+                    var candidate = data.find(item => item.name === candidateName);
+                    if (candidate) {
+                        var progressBar = document.getElementById('progress_' + candidateName);
+                        var percentage = (candidate.votes / candidate.totalVotes) * 100; // Calculate the percentage
+                        progressBar.style.width = percentage + '%';
+                        progressBar.setAttribute('aria-valuenow', percentage);
+                        progressBar.textContent = Math.round(percentage) + '%'; // Display the percentage text
+            }
+    </script>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 

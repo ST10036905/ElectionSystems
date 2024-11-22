@@ -45,7 +45,7 @@
         <section class="mb-5">
             <h2 class="text-center fw-bold mb-4">Meet the candidates</h2>
             <div class="row g-4">
-                <!-- Candidate 1 -->
+               <!-- Candidate 1 -->
                 <div class="col-md-4">
                     <div class="card shadow-sm h-100">
                         <img src="SampleCandidates/candidate_1.jpg" class="card-img-top" alt="John Doe">
@@ -54,8 +54,8 @@
                             <p class="card-text">An experienced leader advocating for innovation and community growth.</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="#know-more-john" class="btn btn-primary w-50 me-1">Know More</a>
-                            <a href="#vote-john" class="btn btn-danger w-50 ms-1">Vote</a>
+                            <a href="#know-more-john" class="btn btn-primary w-50 me-1" onclick="checkLogin('Know More')">Know More</a>
+                            <a href="#vote-john" class="btn btn-danger w-50 ms-1" onclick="checkLogin('Vote')">Vote</a>
                         </div>
                     </div>
                 </div>
@@ -69,8 +69,8 @@
                             <p class="card-text">A visionary with a focus on environmental sustainability and education.</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="#know-more-jane" class="btn btn-primary w-50 me-1">Know More</a>
-                            <a href="#vote-jane" class="btn btn-danger w-50 ms-1">Vote</a>
+                            <a href="#know-more-jane" class="btn btn-primary w-50 me-1" onclick="checkLogin('Know More')">Know More</a>
+                            <a href="#vote-jane" class="btn btn-danger w-50 ms-1" onclick="checkLogin('Vote')">Vote</a>
                         </div>
                     </div>
                 </div>
@@ -84,8 +84,8 @@
                             <p class="card-text">A dedicated advocate for economic development and social equality.</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="#know-more-alex" class="btn btn-primary w-50 me-1">Know More</a>
-                            <a href="#vote-alex" class="btn btn-danger w-50 ms-1">Vote</a>
+                            <a href="#know-more-alex" class="btn btn-primary w-50 me-1" onclick="checkLogin('Know More')">Know More</a>
+                            <a href="#vote-alex" class="btn btn-danger w-50 ms-1" onclick="checkLogin('Vote')">Vote</a>
                         </div>
                     </div>
                 </div>
@@ -107,6 +107,42 @@
             <p class="mt-4">Total Votes Cast: <strong>100</strong></p>
             <p>Percentage of Population Voted: <strong>60%</strong></p>
         </section>
+
+        <script>
+            function checkLogin(action) {
+                var isLoggedIn = false; // Check if the user is logged in (this could be set via session, cookies, or local storage)
+                if (!isLoggedIn) {
+                    alert("You need to be logged in to " + action + ".");
+                } else {
+                    // Redirect to appropriate page based on action
+                    if (action === 'know more') {
+                        // Navigate to candidate detail page (example)
+                        window.location.href = 'Login.aspx';
+                    } else if (action === 'vote') {
+                        // Navigate to voting page (example)
+                        window.location.href = 'Login.aspx';
+                    }
+                }
+            }
+        </script>
+
+        <script>
+            function updatePollResults() {
+                fetch('/Results.aspx/GetVoteCounts')
+                    .then(response => response.json())
+                    .then(data => {
+                        let candidates = data.candidates;
+                        candidates.forEach((candidate, index) => {
+                            let progressBar = document.querySelector(`#candidateResults .progress-bar:nth-child(${index + 1})`);
+                            let votePercentage = (candidate.voteCount / data.totalVotes) * 100;
+                            progressBar.style.width = `${votePercentage}%`;
+                            progressBar.innerText = `${candidate.name} - ${Math.round(votePercentage)}%`;
+                        });
+                    });
+            }
+
+            setInterval(updatePollResults, 5000);  // Update every 5 seconds
+        </script>
     </main>
 
     <!-- Bootstrap JS Bundle -->

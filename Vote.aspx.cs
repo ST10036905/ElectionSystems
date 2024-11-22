@@ -6,8 +6,12 @@ using System.Web.UI;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using System.Linq;
+using System.Web;
+using System.Web.Script.Serialization;
 
 // Represents the voting cast for the Election System.
+// This page is responsible for displaying candidates and allowing users to vote for them.
+
 namespace ElectionSystems
 {
     public partial class Vote : System.Web.UI.Page
@@ -15,7 +19,7 @@ namespace ElectionSystems
         /// <summary>
         /// MongoDB connection string for establishing a connection to the election database.
         /// </summary>
-        private readonly string connectionString = "mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true";
+        private static readonly string connectionString = "mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true";
 
         /// <summary>
         /// The Page_Load method demonstrates the concept of **encapsulation**.
@@ -73,62 +77,47 @@ namespace ElectionSystems
         /// Event handler for handling user interaction when they click the "Vote" button for a candidate.
         /// Demonstrates **polymorphism** by handling events in a flexible manner based on the command argument (candidateId).
         /// </summary>
-        protected void CandidatesRepeater_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
+        [System.Web.Services.WebMethod]
+        public static string VoteForCandidate(string candidateName)
         {
-            // Retrieves the user ID from session state. This is a form of **encapsulation** where session data is managed.
-            string userId = Session["userId"] as string;
+            string userId = HttpContext.Current.Session["userId"] as string;
+            var serializer = new JavaScriptSerializer();
 
-            // Retrieves the candidate ID from the button's CommandArgument (demonstrating **polymorphism** as different button clicks will trigger different candidate IDs).
-            string candidateId = ((System.Web.UI.WebControls.Button)e.CommandSource).CommandArgument;
-
-            // Checks if the user is logged in. If not, displays an alert and prevents further actions.
             if (string.IsNullOrEmpty(userId))
             {
-                Response.Write("<script>alert('You need to login to vote.');</script>");
-                return;
+                return serializer.Serialize(new { success = false, message = "You need to log in to vote." });
             }
 
-            // Checks if the user has already voted using encapsulated business logic in the HasUserVoted method.
             if (HasUserVoted(userId))
             {
-                Response.Write("<script>alert('You have already voted.');</script>");
-                return;
+                return serializer.Serialize(new { success = false, message = "You have already voted." });
             }
 
-            // Attempts to save the user's vote using the encapsulated logic in SavedVoted method.
-            if (SavedVoted(userId, candidateId))
+            if (SaveVote(userId, candidateName))
             {
-                Response.Write("<script>alert('You have successfully voted.');</script>");
-                return;
+                return serializer.Serialize(new { success = true, message = "Vote submitted successfully." });
             }
-            else
-            {
-                // If saving the vote fails, an error message is displayed.
-                Response.Write("<script>alert('An error occurred while voting.');</script>");
-            }
+
+            return serializer.Serialize(new { success = false, message = "An error occurred while submitting your vote." });
         }
 
         /// <summary>
-        /// Checks whether the user has already voted. This method uses **encapsulation** to hide the implementation details of checking votes.
+        /// Checks if the user has already voted based on their user ID.
         /// </summary>
-        private bool HasUserVoted(string userId)
+        private static bool HasUserVoted(string userId)
         {
             try
             {
-                // MongoDB query to check if the user has voted by querying the "Votes" collection.
                 var client = new MongoClient(connectionString);
                 var database = client.GetDatabase("ElectionSystemDB");
                 var votesCollection = database.GetCollection<BsonDocument>("Votes");
                 var filter = Builders<BsonDocument>.Filter.Eq("VoterId", userId);
                 var vote = votesCollection.Find(filter).FirstOrDefault();
 
-                // Returns true if a vote is found for the user.
                 return vote != null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // If there's an error in checking, return true and display an error message.
-                Response.Write("<script>alert('An error occurred while checking if user has voted: " + ex.Message + "');</script>");
                 return true;
             }
         }
@@ -137,9 +126,9 @@ namespace ElectionSystems
         /// Saves the user's vote to MongoDB. This method is an example of **encapsulation** because it isolates the logic for saving a vote.
         /// </summary>
         /// <param name="userId">The ID of the user who is voting.</param>
-        /// <param name="candidateId">The ID of the candidate the user is voting for.</param>
+        /// <param name="candidateName">The name of the candidate the user is voting for.</param>
         /// <returns>Returns true if the vote was saved successfully, false otherwise.</returns>
-        private bool SavedVoted(string userId, string candidateId)
+        private static bool SaveVote(string userId, string candidateName)
         {
             try
             {
@@ -151,8 +140,8 @@ namespace ElectionSystems
                 // Create a new document to represent the user's vote.
                 var vote = new BsonDocument
                 {
-                    { "UserId", userId },
-                    { "CandidateId", candidateId },
+                    { "VoterId", userId },
+                    { "CandidateName", candidateName },
                     { "VoteDate", DateTime.UtcNow }
                 };
 
@@ -163,7 +152,6 @@ namespace ElectionSystems
             catch (Exception ex)
             {
                 // If there is an error while saving the vote, return false and show an error message.
-                Response.Write("<script>alert('An error occurred while saving vote: " + ex.Message + "');</script>");
                 return false;
             }
         }

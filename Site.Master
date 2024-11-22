@@ -51,14 +51,6 @@
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contact</a></li>
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Login">Login</a></li>
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Register">Register</a></li>
-
-                       <%-- Check if the user is logged in to display logout option. --%>
-                        <% if (Session["userId"] != null) { %>
-                            <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="logout()">Logout</a></li>
-                        <% } else { %>
-                            <li class="nav-item"><a class="nav-link" runat="server" href="~/Login">Login</a></li>
-                            <li class="nav-item"><a class="nav-link" runat="server" href="~/Register">Register</a></li>
-                        <% } %>
                     </ul>
                 </div>
             </div>
@@ -75,17 +67,5 @@
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/Scripts/bootstrap.js") %>
     </asp:PlaceHolder>
-
-    <script type="text/javascript">
-        // JavaScript function to handle logout
-        function logout() {
-            // Clear the session on the client-side
-            <%: Session.Abandon(); %>
-            <%: Session.Clear(); %>
-
-            // Redirect the user to the home page or login page
-            window.location.href = '/';
-        }
-    </script>
 </body>
 </html>

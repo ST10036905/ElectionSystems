@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using MongoDB.Driver;
+
 // Handles commission member registration functionality for the Election System.
 
 namespace ElectionSystems

@@ -1,7 +1,8 @@
 ﻿using ElectionSystems.Classes; 
 using MongoDB.Driver;          
 using System;                  
-using System.Web.UI;           
+using System.Web.UI;        
+
 // Code-behind for the AddVoter web page. 
 // Handles voter registration by interacting with the MongoDB database.
 // Demonstrates object-oriented principles such as encapsulation and inheritance.

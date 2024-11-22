@@ -13,7 +13,8 @@ namespace ElectionSystems
         /// Declaring properties for the User class using getters and setters.
         /// These properties represent the user's details.
         /// </summary>
-
+        [BsonId]
+        public ObjectId Id { get; set; }
         public string Email { get; set; } 
         public string Name { get; set; } 
         public int Age { get; set; } 
@@ -49,29 +50,15 @@ namespace ElectionSystems
             Address = address; 
         }
 
-        /// <summary>
-        /// Method to set the password of the user by hashing it before storing.
-        /// </summary>
-        /// <param name="password">Raw password entered by the user.</param>
+        public string HashPassword(string password)
+        {
+            // Using bcrypt to hash the password
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
         public void SetPassword(string password)
         {
             this.Password = HashPassword(password); // Hash and store the password.
-        }
-
-        /// <summary>
-        /// Method to hash the password using SHA256 hashing algorithm.
-        /// </summary>
-        /// <param name="password">Raw password to be hashed.</param>
-        /// <returns>The hashed password as a Base64 encoded string.</returns>
-        public string HashPassword(string password)
-        {
-            // Using SHA256 to hash the password.
-            using (var sha256 = System.Security.Cryptography.SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                // Convert the hashed bytes to Base64 string and return it.
-                return Convert.ToBase64String(bytes);
-            }
         }
     }
 }

@@ -2,12 +2,15 @@
 using MongoDB.Driver;
 using System;
 using System.Web.UI;
+using BCrypt.Net;
+using ElectionSystems;
+
 // Handles user login functionality for the Election System.
 // Allows users (Voters and Commissioners) to authenticate and navigate to their respective dashboards.
 
 namespace ElectionSystems
 {
-    public partial class Login : System.Web.UI.Page 
+    public partial class Login : System.Web.UI.Page
     {
         /// <summary>
         /// Declaring and instantiating a User object to store user data.
@@ -48,45 +51,57 @@ namespace ElectionSystems
                 // Validation: Ensures required fields are filled.
                 if (string.IsNullOrEmpty(EmailTxtBox.Text) || string.IsNullOrEmpty(PasswordTxtBox.Text))
                 {
-                    ErrorMessageLabel.Text = "Please enter email and password.";
+                    ErrorMessageLabel.Text = "Please fill in both email and password.";
                     return;
                 }
 
-                // Encapsulation: User details are encapsulated within the User object.
-                userData.Email = EmailTxtBox.Text;
-                userData.Password = PasswordTxtBox.Text;
+                var email = EmailTxtBox.Text.Trim();
+                var password = PasswordTxtBox.Text.Trim();
 
-                // Validate credentials and retrieve user role and ID.
-                var userDetail = ValidateLogin(userData.Email, userData.Password);
+                var filter = Builders<User>.Filter.Eq(u => u.Email, email);
+                var user = MongoDBHelper.GetUserByEmail(filter);
 
-                if (userDetail.HasValue)
+                if (user != null)
                 {
-                    if (userDetail.Value.Role == "Voter")
+                    // Debug: Check the user and stored password hash
+                    System.Diagnostics.Debug.WriteLine("User found: " + user.Name + ", Role: " + user.Role);
+                    System.Diagnostics.Debug.WriteLine("Entered password: " + password);
+                    System.Diagnostics.Debug.WriteLine("Stored password hash: " + user.Password);
+
+                    if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                     {
-                        // Inheritance: Redirect logic uses functionality inherited from the Page class.
-                        Session["VoterId"] = userDetail.Value.UserId;
-                        SucessMessageLabel.Text = "Login successful...Redirecting voter";
-                        string script = "setTimeout(function(){ window.location = 'Vote.aspx'; }, 2000);";
-                        ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
+                        // Redirect the user to their appropriate dashboard based on role
+                        if (user.Role == "Commissioner")
+                        {
+                            Response.Redirect("CommissionerDashboard.aspx");
+                        }
+                        else if (user.Role == "Voter")
+                        {
+                            Response.Redirect("VoterDashboard.aspx");
+                        }
+                        else
+                        {
+                            ErrorMessageLabel.Text = "Unknown user role.";
+                        }
                     }
-                    else if (userDetail.Value.Role == "Commissioner")
+                    else
                     {
-                        Session["CommissionerId"] = userDetail.Value.UserId;
-                        SucessMessageLabel.Text = "Welcome back :) Redirecting.......";
-                        string script = "setTimeout(function(){ window.location = 'MemberDashboard.aspx'; }, 2000);";
-                        ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
+                        ErrorMessageLabel.Text = "Invalid password.";
+                        System.Diagnostics.Debug.WriteLine("Password mismatch for: " + user.Email);
                     }
                 }
                 else
                 {
-                    ErrorMessageLabel.Text = "Invalid username or password";
+                    ErrorMessageLabel.Text = "User not found.";
+                    System.Diagnostics.Debug.WriteLine("No user found for email: " + email);
                 }
             }
             catch (Exception ex)
             {
-                ErrorMessageLabel.Text = "Error: " + ex.Message;
+                ErrorMessageLabel.Text = "An error occurred: " + ex.Message;
             }
         }
+
 
         /// <summary>
         /// Validates user credentials by checking the MongoDB database for matching email and password.
@@ -107,7 +122,7 @@ namespace ElectionSystems
                 // Encapsulation: Validation logic for "User" collection.
                 var userCollection = database.GetCollection<User>("User");
                 var user = userCollection.Find(u => u.Email == email).FirstOrDefault();
-                if (user != null && user.Password == userData.HashPassword(password))
+                if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
                     return (user.Email, user.Role);
                 }
@@ -115,7 +130,7 @@ namespace ElectionSystems
                 // Encapsulation: Validation logic for "Commissioner" collection.
                 var commissionerCollection = database.GetCollection<User>("Commissioner");
                 var commissioner = commissionerCollection.Find(c => c.Email == email).FirstOrDefault();
-                if (commissioner != null && commissioner.Password == userData.HashPassword(password))
+                if (commissioner != null && BCrypt.Net.BCrypt.Verify(password, commissioner.Password))
                 {
                     return (commissioner.Email, commissioner.Role);
                 }
@@ -146,3 +161,28 @@ namespace ElectionSystems
         }
     }
 }
+
+public static class MongoDBHelper
+{
+    private static readonly MongoClient client = new MongoClient("mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true");
+    private static readonly IMongoDatabase database = client.GetDatabase("ElectionSystemDB");
+
+    public static User GetUserByEmail(FilterDefinition<User> filter)
+    {
+        // Check both collections (Voter and Commissioner)
+        var voterCollection = database.GetCollection<User>("Voter");
+        var commissionerCollection = database.GetCollection<User>("Commissioner");
+
+        // Try to find the user in the Voter collection first
+        var user = voterCollection.Find(filter).FirstOrDefault();
+
+        // If not found in Voter, check in Commissioner
+        if (user == null)
+        {
+            user = commissionerCollection.Find(filter).FirstOrDefault();
+        }
+
+        return user;
+    }
+}
+

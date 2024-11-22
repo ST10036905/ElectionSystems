@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls; 
 using MongoDB.Bson;            
 using MongoDB.Driver;
+
 // Code-behind for the AddCandidate web page.
 // Handles candidate registration and image upload.
 // Demonstrates encapsulation, inheritance, and polymorphism principles.
