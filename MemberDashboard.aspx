@@ -116,6 +116,7 @@
          <div class="action-buttons">
             <a href="AddVoter.aspx">Add Voter</a>
             <a href="AddCandidate.aspx">Add Candidate</a>
+             <a href="Vote.aspx">View candidate</a>
         </div>
 
          <div class="content-section">

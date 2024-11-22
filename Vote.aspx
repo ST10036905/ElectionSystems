@@ -66,35 +66,39 @@
                 </div>
             </div>
         </section>
-
-       <section class="mb-5">
-           <asp:Repeater ID="CandidatesRepeater" runat="server" Visible="true" OnItemCommand="CandidatesRepeater_ItemCommand">
-                <HeaderTemplate>
-                    <div class="row g-4">
-                </HeaderTemplate>
-                <ItemTemplate>
-                    <div class="col-md-4">
-                        <div class="card shadow-sm h-100">
-                            <img src='<%# ResolveUrl(Eval("Image").ToString()) %>' class="card-img-top" alt='<%# Eval("Name") %>'>
-                            <div class="card-body text-center">
-                                <h5 class="card-title fw-bold"><%# Eval("Name") %></h5>
-                                <p class="card-text"><%# Eval("Description") %></p>
+        <!-- Repeater to display candidates dynamically -->
+        <section>
+            <div class="container">
+                <div class="row g-4">
+                    <asp:Repeater ID="CandidatesRepeater" runat="server">
+                        <ItemTemplate>
+                            <div class="col-md-4">
+                                <div class="card shadow-sm h-100">
+                                    <!-- Image from the repeater -->
+                                    <img src="<%# Eval("Image") %>" class="card-img-top" alt="<%# Eval("Name") %>">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title fw-bold"><%# Eval("Name") %></h5>
+                                        <p class="card-text"><%# Eval("Description") %></p>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-between">
+                                        <!-- Vote button -->
+                                        <button class="btn btn-success w-100 vote-btn" 
+                                                runat="server" 
+                                                commandname="Vote" 
+                                                commandargument='<%# Eval("Name") %>'>Vote</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-footer d-flex justify-content-between">
-                                <button class="btn btn-success w-100 vote-btn" data-candidate='<%# Eval("Name") %>'>Vote</button>
-                            </div>
-                        </div>
-                    </div>
-                    <%# (Container.ItemIndex + 1) % 3 == 0 ? "</div><div class='row g-4'>" : "" %>
-                </ItemTemplate>
-                <FooterTemplate>
-                    </div>
-                </FooterTemplate>
-            </asp:Repeater>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+            </div>
         </section>
-
-
     </main>
+
+        <!-- Error and Success Messages -->
+    <asp:Label ID="ErrorMessageLabel" runat="server" ForeColor="Red" CssClass="error-message"></asp:Label>
+    <asp:Label ID="SucessMessageLabel" runat="server" ForeColor="Green" CssClass="success-message"></asp:Label>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
