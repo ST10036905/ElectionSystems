@@ -32,7 +32,7 @@
                             <p class="card-text">An experienced leader advocating for innovation and community growth.</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <button class="btn btn-danger w-100" onclick="vote('Jane Smith')">Vote</button>
+                            <button class="btn btn-success w-100 vote-btn" onclick="vote('Jane Smith')">Vote</button>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                             <p class="card-text">A visionary with a focus on environmental sustainability and education.</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <button class="btn btn-danger w-100" onclick="vote('John Doe')">Vote</button>
+                            <button class="btn btn-success w-100 vote-btn" onclick="vote('John Doe')">Vote</button>
                         </div>
                     </div>
                 </div>
@@ -60,20 +60,22 @@
                             <p class="card-text">A dedicated advocate for economic development and social equality.</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <button class="btn btn-danger w-100" onclick="vote('Alex Johnson')">Vote</button>
+                            <button class="btn btn-success w-100 vote-btn" onclick="vote('Alex Johnson')">Vote</button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Dynamic Candidates Section -->
-        <section class="mb-5">
-            <asp:Repeater ID="RepeaterCandidates" runat="server" Visible="false">
+       <section class="mb-5">
+            <asp:Repeater ID="CandidatesRepeater" runat="server" Visible="true">
+                <HeaderTemplate>
+                    <div class="row g-4">
+                </HeaderTemplate>
                 <ItemTemplate>
                     <div class="col-md-4">
                         <div class="card shadow-sm h-100">
-                            <img src='<%# Eval("ImageUrl") %>' class="card-img-top" alt='<%# Eval("Name") %>'>
+                            <img src='<%# ResolveUrl(Eval("Image").ToString()) %>' class="card-img-top" alt='<%# Eval("Name") %>'>
                             <div class="card-body text-center">
                                 <h5 class="card-title fw-bold"><%# Eval("Name") %></h5>
                                 <p class="card-text"><%# Eval("Description") %></p>
@@ -83,9 +85,14 @@
                             </div>
                         </div>
                     </div>
+                    <%# (Container.ItemIndex + 1) % 3 == 0 ? "</div><div class='row g-4'>" : "" %>
                 </ItemTemplate>
+                <FooterTemplate>
+                    </div>
+                </FooterTemplate>
             </asp:Repeater>
         </section>
+
 
     </main>
 

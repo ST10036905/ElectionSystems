@@ -49,10 +49,10 @@ namespace ElectionSystems
             SaveVoterData(voterData.Name, voterData.Email, voterData.Address, voterData.Password, voterData.Role);
 
             SucessMessageLabel.Text = "Voter registration successful.";
-            string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 3000);";
+            string script = "setTimeout(function(){ window.location = 'MemberDashvoard.aspx'; }, 3000);";
             ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
 
-            Response.Redirect("MemberDashboard.aspx");
+            //Response.Redirect("MemberDashboard.aspx");
         }
 
         public void SaveVoterData(string name, string email, string address, string password,string role)
@@ -103,7 +103,7 @@ namespace ElectionSystems
             AddressTxtBox.Text = "";
 
             ErrorMessageLabel.Text = "Operation being canceled...";
-            string script = "setTimeout(function(){ window.location = 'Dashboard.aspx'; }, 2000);";
+            string script = "setTimeout(function(){ window.location = 'MemberDashboard.aspx'; }, 2000);";
             ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
         }
 

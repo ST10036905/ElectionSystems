@@ -77,10 +77,20 @@
             background-color: var(--secondary-color);
         }
 
+        .content-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        #VoterCountLabel {
+            font-weight: bold;
+            margin-top: 0.5rem;
+            display: block;
+        }
     </style>
 
     <div class="dashboard-container">
-        <h1>Member Dashboard</h1>
+        <h1>Commission member dashboard</h1>
         <div class="content-section">
             <h2>Welcome</h2>
             <p style="color: var(--text-color);">
@@ -106,6 +116,15 @@
             <a href="AddCandidate.aspx">Add Candidate</a>
         </div>
 
+         <div class="content-section">
+         <h2>Voter Statistics</h2>
+         <asp:Label ID="VoterCountLabel" runat="server" style="font-size: 1.2rem; color: var(--primary-color);"></asp:Label>
+         </div>
+
+         <div class="content-section">
+         <h2>Candidates Statistics</h2>
+         <asp:Label ID="CandidatesCountLabel" runat="server" style="font-size: 1.2rem; color: var(--primary-color);"></asp:Label>
+         </div>
     </div>
 </asp:Content>
 
