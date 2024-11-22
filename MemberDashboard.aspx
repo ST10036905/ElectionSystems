@@ -93,6 +93,8 @@
         <h1>Commission member dashboard</h1>
         <div class="content-section">
             <h2>Welcome</h2>
+            <!-- error message label -->
+            <asp:Label ID="ErrorMessageLabel" runat="server" ForeColor="Red" CssClass="error-message"></asp:Label>
             <p style="color: var(--text-color);">
                 Use the navigation bar to manage voters, candidates, and other data related to the election process. Please ensure all data entered is accurate.
             </p>

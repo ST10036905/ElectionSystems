@@ -1,6 +1,7 @@
 ﻿using ElectionSystems.Classes;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
-using System.Data.SqlClient;
 using System.Web;
 using System.Web.UI;
 
@@ -9,23 +10,23 @@ namespace ElectionSystems
     public partial class AddVoter : System.Web.UI.Page
     {
         /// <summary>
-        /// declaring an instance of voters class
+        /// Declaring an instance of the User class (used for voter data).
         /// </summary>
         Voter voterData = new Voter();
 
         /// <summary>
-        /// declaring and instantiating connection string
+        /// MongoDB connection setup.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Mayra\\source\\repos\\ElectionSystems\\App_Data\\SystemDatabase.mdf;Integrated Security=True";
-
+        private readonly string connectionString = "mongodb://localhost:27017"; // Connection string to MongoDB
+        private readonly string databaseName = "ElectionSystemDB"; // Database name
+        private readonly string votersCollectionName = "Voter"; // Collection name for voters
+        private readonly string usersCollectionName = "User"; // Collection name for users
 
         protected void Page_Load(object sender, EventArgs e) { }
 
         protected void SaveBtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(NameTxtBox.Text) || 
+            if (string.IsNullOrEmpty(NameTxtBox.Text) ||
                 string.IsNullOrEmpty(PasswordTxtBox.Text) ||
                 string.IsNullOrEmpty(ReEnterPasswordTxtBox.Text) ||
                 string.IsNullOrEmpty(EmailTxtBox.Text) ||
@@ -35,58 +36,64 @@ namespace ElectionSystems
                 return;
             }
 
+            // Setting voter data
             voterData.Name = NameTxtBox.Text;
             voterData.Email = EmailTxtBox.Text;
             voterData.Address = AddressTxtBox.Text;
+
+            // Hashing password before saving
             voterData.SetPassword(PasswordTxtBox.Text);
 
-            if (!voterData.VerifyPassword(ReEnterPasswordTxtBox.Text))
+            // Verifying password match
+            if (!voterData.Password.Equals(PasswordTxtBox.Text) || !PasswordTxtBox.Text.Equals(ReEnterPasswordTxtBox.Text))
             {
                 ErrorMessageLabel.Text = "Password does not match.";
                 return;
             }
 
+            // Save voter data with hashed password
             SaveVoterData(voterData.Name, voterData.Email, voterData.Address, voterData.Password, voterData.Role);
 
             SucessMessageLabel.Text = "Voter registration successful.";
-            string script = "setTimeout(function(){ window.location = 'MemberDashvoard.aspx'; }, 3000);";
+            string script = "setTimeout(function(){ window.location = 'MemberDashboard.aspx'; }, 3000);";
             ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
-
-            //Response.Redirect("MemberDashboard.aspx");
         }
 
-        public void SaveVoterData(string name, string email, string address, string password,string role)
+        public void SaveVoterData(string name, string email, string address, string password, string role)
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                // Connect to MongoDB
+                var client = new MongoClient(connectionString);
+                var database = client.GetDatabase(databaseName);
+
+                // Get collections
+                var votersCollection = database.GetCollection<BsonDocument>(votersCollectionName);
+                var usersCollection = database.GetCollection<BsonDocument>(usersCollectionName);
+
+                // Create voter document
+                var voterDocument = new BsonDocument
                 {
-                    conn.Open();
-                    using (SqlTransaction transaction = conn.BeginTransaction())
-                    {
-                        string voterQuery = "INSERT INTO Voter (Name, Password, Email, Address, Role) VALUES (@Name,@Password, @Email, @Address, @Role)";
-                        using (SqlCommand voterCommand = new SqlCommand(voterQuery, conn, transaction))
-                        {
-                            voterCommand.Parameters.AddWithValue("@Name", name);
-                            voterCommand.Parameters.AddWithValue("@Email", email);
-                            voterCommand.Parameters.AddWithValue("@Address", address);
-                            voterCommand.Parameters.AddWithValue("@Password", password);
-                            voterCommand.Parameters.AddWithValue("@Role", role);
-                            voterCommand.ExecuteNonQuery();
-                        }
+                    { "Name", name },
+                    { "Email", email },
+                    { "Address", address },
+                    { "Password", password }, // Save the hashed password
+                    { "Role", role }
+                };
 
-                        string userQuery = "INSERT INTO [User] (Email, Password, Role) VALUES (@Email, @Password, @Role)";
-                        using (SqlCommand userCommand = new SqlCommand(userQuery, conn, transaction))
-                        {
-                            userCommand.Parameters.AddWithValue("@Email", email);
-                            userCommand.Parameters.AddWithValue("@Password", password);
-                            userCommand.Parameters.AddWithValue("@Role", role);
-                            userCommand.ExecuteNonQuery();
-                        }
+                // Insert voter document into the 'Voters' collection
+                votersCollection.InsertOne(voterDocument);
 
-                        transaction.Commit();
-                    }
-                }
+                // Create user document (for user authentication)
+                var userDocument = new BsonDocument
+                {
+                    { "Email", email },
+                    { "Password", password }, // Save the hashed password
+                    { "Role", role }
+                };
+
+                // Insert user document into the 'Users' collection
+                usersCollection.InsertOne(userDocument);
             }
             catch (Exception ex)
             {
@@ -106,6 +113,5 @@ namespace ElectionSystems
             string script = "setTimeout(function(){ window.location = 'MemberDashboard.aspx'; }, 2000);";
             ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
         }
-
     }
 }

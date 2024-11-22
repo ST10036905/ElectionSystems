@@ -1,6 +1,7 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -15,14 +16,10 @@ namespace ElectionSystems
         /// </summary>
         User userData = new User();
 
-        /// <summary>
-        /// declaring and instantiating connection string
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Mayra\\source\\repos\\ElectionSystems\\App_Data\\SystemDatabase.mdf;Integrated Security=True";
-
-
+        private readonly string connectionString = "mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true";
+        private readonly string databaseName = "ElectionSystemDB";
+        private readonly string commisionerCollection = "commissioner";
+        private readonly string voterCollection = "voter";
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -42,6 +39,7 @@ namespace ElectionSystems
                 //filling the text boxes with form data
                 userData.Email = EmailTxtBox.Text;
                 userData.Password = PasswordTxtBox.Text;
+
                 var userDetail = ValidateLogin(userData.Email, userData.Password);
 
                 //validating based on role who is to user in order to redirect them to right form.
@@ -92,36 +90,36 @@ namespace ElectionSystems
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                var client = new MongoClient(connectionString);
+                var database = client.GetDatabase(databaseName);
+
+                // Check in the Commissioner collection
+                var commisionerCollection = database.GetCollection<BsonDocument>(this.commisionerCollection);
+                var commissionerFilter = Builders<BsonDocument>.Filter.Eq("Email", email);
+                var commissioner = commisionerCollection.Find(commissionerFilter).FirstOrDefault();
+
+                if (commissioner != null)
                 {
-                    connection.Open();
-                    string query = @"
-                        SELECT CommissionerId AS UserId, 'Commissioner' AS Role, Password 
-                        FROM Commissioner 
-                        WHERE Email = @Email
-                        UNION ALL 
-                        SELECT VoterId AS UserId, 'Voter' AS Role, Password 
-                        FROM Voter 
-                        WHERE Email = @Email";
-
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    string storedHashedPassword = commissioner["Password"].AsString;
+                    if (userData.HashPassword(password) == storedHashedPassword)
                     {
-                        cmd.Parameters.AddWithValue("@Email", email);
+                        userDetail = (commissioner["_id"].ToString(), "Commissioner");
+                        return userDetail;
+                    }
+                }
 
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                string storedHashedPassword = reader["Password"].ToString();
-                                string hashedPassword = userData.HashPassword(password);
+                // Check in the Voter collection
+                var voterCollection = database.GetCollection<BsonDocument>(this.voterCollection);
+                var voterFilter = Builders<BsonDocument>.Filter.Eq("Email", email);
+                var voter = voterCollection.Find(voterFilter).FirstOrDefault();
 
-                                if (hashedPassword == storedHashedPassword)
-                                {
-                                    userDetail = (reader["UserId"].ToString(), reader["Role"].ToString());
-                                    break;
-                                }
-                            }
-                        }
+                if (voter != null)
+                {
+                    string storedHashedPassword = voter["Password"].AsString;
+                    if (userData.HashPassword(password) == storedHashedPassword)
+                    {
+                        userDetail = (voter["_id"].ToString(), "Voter");
+                        return userDetail;
                     }
                 }
             }
@@ -129,6 +127,7 @@ namespace ElectionSystems
             {
                 ErrorMessageLabel.Text = "An error occurred: " + ex.Message;
             }
+
             return userDetail;
         }//_________________________________________________________________________________________________________________
 

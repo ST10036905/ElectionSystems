@@ -68,7 +68,7 @@
         </section>
 
        <section class="mb-5">
-            <asp:Repeater ID="CandidatesRepeater" runat="server" Visible="true">
+           <asp:Repeater ID="CandidatesRepeater" runat="server" Visible="true" OnItemCommand="CandidatesRepeater_ItemCommand">
                 <HeaderTemplate>
                     <div class="row g-4">
                 </HeaderTemplate>

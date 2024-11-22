@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using MongoDB.Driver;
 
 namespace ElectionSystems
 {
@@ -22,8 +23,20 @@ namespace ElectionSystems
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Mayra\\source\\repos\\ElectionSystems\\App_Data\\SystemDatabase.mdf;Integrated Security=True";
+       // private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Mayra\\source\\repos\\ElectionSystems\\App_Data\\SystemDatabase.mdf;Integrated Security=True";
 
+        private readonly IMongoCollection<User> userCollection;
+        private readonly IMongoCollection<User> commissionerCollection;
+
+
+        public Register()
+        {
+            var client = new MongoClient("mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true");
+            var database = client.GetDatabase("ElectionSystemDB");
+
+            userCollection = database.GetCollection<User>("User");
+            commissionerCollection = database.GetCollection<User>("Commissioner");
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -49,110 +62,95 @@ namespace ElectionSystems
                 return;
             }
 
-            //filling the text boxes with form data
+            // Filling the text boxes with form data
             userData.Email = EmailTxtBox.Text;
             userData.Name = NameTxtBox.Text;
             userData.Role = DropDownListRole.Text;
-            userData.Password = PasswordTxtBox.Text.Trim();
             userData.Address = AddressTxtBox.Text;
 
-            //performing validation on age.
-            int age;
-            if (!int.TryParse(AgeTxtBox.Text, out age))
+            // Performing validation on age.
+            if (!int.TryParse(AgeTxtBox.Text, out int age))
             {
                 ErrorMessageLabel.Text = "Please enter a valid age.";
                 return;
             }
 
-            //performing validation to ensure password and confirm passsword match.
+            // Performing validation to ensure password and confirm password match.
+            string password = PasswordTxtBox.Text.Trim();
             string confirmPassword = ReEnterPasswordTxtBox.Text.Trim();
-            if (userData.Password != confirmPassword)
+            if (password != confirmPassword)
             {
-                //Displaying an error message
                 ErrorMessageLabel.Text = "Password does not match.";
                 return;
             }
 
-            //performing validation to ensure only comissioner can register user.
+            // Performing validation to ensure only commissioners can register users.
             if (DropDownListRole.Text.Equals("Voter"))
             {
-                //Displaying an error message
                 ErrorMessageLabel.Text = "Voters are not allowed to register, please register with a member of our commission.";
                 return;
             }
 
-            //calling the RegisterQuery method after getting the data
-            RegisterQuery(userData.Email,  userData.Name, userData.Age, userData.Role, userData.Password, userData.Address);
+            // Hash the password
+            userData.SetPassword(password);
 
-            // Using a startup script to redirect after 2 seconds
-            SucessMessageLabel.Text = "Registration succesful....Loading";
-            string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 2000);";
-            ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
-        }//_______________________________________________________________________________________________________________
+            // Creating user and commissioner objects
+            var newUser = new User
+            {
+                Email = userData.Email,
+                Name = userData.Name,
+                Age = age,
+                Role = userData.Role,
+                Password = userData.Password, // Hashed password
+                Address = userData.Address
+            };
 
+            var newCommissioner = new User
+            {
+                Email = userData.Email,
+                Name = userData.Name,
+                Age = age,
+                Role = userData.Role,
+                Password = userData.Password, // Hashed password
+                Address = userData.Address
+            };
 
-        /// <summary>
-        /// Method used to save the registration data in database.
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="username"></param>
-        /// <param name="name"></param>
-        /// <param name="age"></param>
-        /// <param name="role"></param>
-        /// <param name="password"></param>
-        /// <param name="address"></param>
-
-        public void RegisterQuery(string email, string name, int age, string role, string password, string address)
-        {
             try
             {
-                // Hashing the password before storing it
-                string hashedPassword = userData.HashPassword(password);
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-
-                    conn.Open();
-
-                    using (SqlTransaction transaction = conn.BeginTransaction())
-                    {
-                        string query = "INSERT INTO Commissioner (Email, Name, Age, Role, Password, Address)" +
-                            " VALUES (@Email, @Name, @Age, @Role, @Password, @Address)";
-
-                        // Inserting data into the Employee table
-                        using (SqlCommand command = new SqlCommand(query, conn, transaction))
-                        {
-                            command.Parameters.AddWithValue("@Email", email);
-                            command.Parameters.AddWithValue("@Name", name);  // Correctly passing the name here
-                            command.Parameters.AddWithValue("@Age", age);
-                            command.Parameters.AddWithValue("@Role", role);
-                            command.Parameters.AddWithValue("@Password", hashedPassword); // Store hashed password
-                            command.Parameters.AddWithValue("@Address", address);
-                            command.ExecuteNonQuery();
-                        }
-
-                        // Inserting data into the User table
-                        string userQuery = "INSERT INTO [User] (Email, Password, Role) VALUES (@Email, @Password, @Role)";
-                        using (SqlCommand userCommand = new SqlCommand(userQuery, conn, transaction))
-                        {
-                            userCommand.Parameters.AddWithValue("@Email", email);  // Correctly passing the name here as well
-                            userCommand.Parameters.AddWithValue("@Password", hashedPassword); // Store hashed password
-                            userCommand.Parameters.AddWithValue("@Role", role);
-                            // Executing the connection
-                            userCommand.ExecuteNonQuery();
-                        }
-                        transaction.Commit();
-                    }
-                }
+                RegisterUser(newUser, newCommissioner);
+                // Using a startup script to redirect after 2 seconds
+                SucessMessageLabel.Text = "Registration successful....Loading";
+                string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 2000);";
+                ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
             }
             catch (Exception ex)
             {
-                ErrorMessageLabel.Text = "An error occurred during registration: " + ex.Message;
+                ErrorMessageLabel.Text = "An error occurred: " + ex.Message;
             }
+        }
 
-        }//_______________________________________________________________________________________________________________
+        private void RegisterUser(User newUser, User newCommissioner)
+        {
+            using (var session = new MongoClient("mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true").StartSession())
+            {
+                session.StartTransaction();
 
+                try
+                {
+                    userCollection.InsertOne(session, newUser);
 
+                    commissionerCollection.InsertOne(session, newCommissioner);
+
+                    session.CommitTransaction();
+                }
+                catch (Exception)
+                {
+                    session.AbortTransaction();
+                    throw;
+                }
+              
+            }
+        }
 
         /// <summary>
         /// Button user selects to redirect to cancel the operation.

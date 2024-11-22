@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace ElectionSystems
 {
@@ -17,68 +17,48 @@ namespace ElectionSystems
         /// </summary>
         User userData = new User();
 
-        /// <summary>
-        /// declaring and instantiating connection string
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Mayra\\source\\repos\\ElectionSystems\\App_Data\\SystemDatabase.mdf;Integrated Security=True";
-
-
+        private readonly string connectionString = "mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true";
         protected void Page_Load(object sender, EventArgs e)
         {
-
 
         }
 
         protected void SubmitBtn_Click(object sender, EventArgs e)
         {
-            // Validate inputs
-            if (string.IsNullOrWhiteSpace(CandidateName.Text) ||
-                string.IsNullOrWhiteSpace(Description.Value))
-            {
-                ErrorMessageLabel.Text = "Please fill in all required fields.";
-                return;
-            }
-
-
-            // Save the image to the server
-            string imagePath = SaveImage();
-
-            if (string.IsNullOrEmpty(imagePath))
-            {
-                ErrorMessageLabel.Text = "Failed to upload the image.";
-                return;
-            }
-
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                // Validate inputs
+                if (string.IsNullOrWhiteSpace(CandidateName.Text) ||
+                    string.IsNullOrWhiteSpace(Description.Value))
                 {
-                    string query = "INSERT INTO Candidate (Name, Description, Image) " +
-                                   "VALUES (@Name, @Description, @Image)";
-
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@Name", CandidateName.Text);
-                        command.Parameters.AddWithValue("@Description", Description.Value);
-                        command.Parameters.AddWithValue("@Image", imagePath);
-
-                        connection.Open();
-                        command.ExecuteNonQuery();
-                    }
+                    ErrorMessageLabel.Text = "Please fill in all required fields.";
+                    return;
                 }
 
-                SucessMessageLabel.Text = "Candidate added successfully...Redirecting";
+
+                // Save the image to the server
+                string imagePath = SaveImage();
+
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    ErrorMessageLabel.Text = "Failed to upload the image.";
+                    return;
+                }
+
+                // Insert candidate data into the database
+                AddCandidateToDatabase(CandidateName.Text, Description.Value, imagePath);
+
+                // Display success message and redirect
+                SucessMessageLabel.Text = "Candidate added successfully! Redirecting...";
                 string script = "setTimeout(function(){ window.location = 'MemberDashboard.aspx'; }, 3000);";
                 ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
 
-                //Response.Redirect("MemberDashboard.aspx");
             }
             catch (Exception ex)
             {
-                ErrorMessageLabel.Text = "An error occurred: " + ex.Message;
-            }
+                // Log exception (placeholder for future logging implementation)
+                ErrorMessageLabel.Text = $"An error occurred: {ex.Message}";
+            }           
         }
 
         private string SaveImage()
@@ -93,20 +73,58 @@ namespace ElectionSystems
                         Directory.CreateDirectory(folderPath);
                     }
 
-                    string fileName = Path.GetFileName(CandidateImage.PostedFile.FileName);
-                    string fullPath = Path.Combine(folderPath, fileName);
+                    // Generate unique file name to avoid overwriting existing files
+                    string fileName = Path.GetFileNameWithoutExtension(CandidateImage.PostedFile.FileName);
+                    string fileExtension = Path.GetExtension(CandidateImage.PostedFile.FileName);
+                    string uniqueFileName = $"{fileName}_{Guid.NewGuid()}{fileExtension}";
+                    string fullPath = Path.Combine(folderPath, uniqueFileName);
+
+                    // Save file to server
                     CandidateImage.PostedFile.SaveAs(fullPath);
 
                     // Return the relative path to store in the database
-                    return "~/UploadedImages/" + fileName;
+                    return $"~/UploadedImages/{uniqueFileName}";
                 }
             }
             catch (Exception ex)
             {
-                ErrorMessageLabel.Text = "Image upload failed: " + ex.Message;
+                // Log exception (placeholder for future logging implementation)
+                ErrorMessageLabel.Text = $"Image upload failed: {ex.Message}";
             }
-
             return null;
+        }
+        /// <summary>
+        /// Method to insert the candidate to the database
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="imagePath"></param>
+        /// <exception cref="ApplicationException"></exception>
+        private void AddCandidateToDatabase(string name, string description, string imagePath)
+        {
+            try
+            {
+                // Initialize MongoDB client
+                var client = new MongoClient(connectionString);
+                var database = client.GetDatabase("ElectionSystemDB");
+                var candidatesCollection = database.GetCollection<BsonDocument>("Candidates");
+
+                // Create a BSON document to insert
+                var candidateDocument = new BsonDocument
+                {
+                    { "Name", name },
+                    { "Description", description },
+                    { "Image", imagePath },
+                    { "CreatedDate", DateTime.UtcNow }
+                };
+
+                // Insert the document into the collection
+                candidatesCollection.InsertOne(candidateDocument);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error inserting candidate into MongoDB.", ex);
+            }
         }
 
         protected void CancelBtn_Click(object sender, EventArgs e)
