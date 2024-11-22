@@ -1,7 +1,7 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Driver;
-// Represents the Member Dashboard for the Election System.
+// Represents the Member Dashboard (ADMIN) for the Election System.
 // This page is responsible for displaying key statistics such as voter count and candidate count.
 
 namespace ElectionSystems
