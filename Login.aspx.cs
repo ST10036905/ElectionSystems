@@ -29,41 +29,32 @@ namespace ElectionSystems
         {
             try
             {
-                // Checking if email or password is empty
                 if (string.IsNullOrEmpty(EmailTxtBox.Text) || string.IsNullOrEmpty(PasswordTxtBox.Text))
                 {
                     ErrorMessageLabel.Text = "Please enter email and password.";
                     return;
                 }
 
-                //filling the text boxes with form data
                 userData.Email = EmailTxtBox.Text;
                 userData.Password = PasswordTxtBox.Text;
 
                 var userDetail = ValidateLogin(userData.Email, userData.Password);
 
-                //validating based on role who is to user in order to redirect them to right form.
                 if (userDetail != null)
                 {
                     if (userDetail.Value.Role == "Voter")
                     {
                         Session["VoterId"] = userDetail.Value.UserId;
-
-                        // Using a startup script to redirect after 2 seconds
-                        SucessMessageLabel.Text = "Login succesful...Redirecting voter";
+                        SucessMessageLabel.Text = "Login successful...Redirecting voter";
                         string script = "setTimeout(function(){ window.location = 'Vote.aspx'; }, 2000);";
                         ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
-
                     }
                     else if (userDetail.Value.Role == "Commissioner")
                     {
                         Session["CommissionerId"] = userDetail.Value.UserId;
-
-                        // Using a startup script to redirect after 2 seconds
                         SucessMessageLabel.Text = "Welcome back :) Redirecting.......";
                         string script = "setTimeout(function(){ window.location = 'MemberDashboard.aspx'; }, 2000);";
                         ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
-
                     }
                 }
                 else
@@ -75,51 +66,24 @@ namespace ElectionSystems
             {
                 ErrorMessageLabel.Text = "Error: " + ex.Message;
             }
-        }//_________________________________________________________________________________________________________________
+        }
 
-
-        /// <summary>
-        /// Method used to validate login credentials using a query
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
         public (string UserId, string Role)? ValidateLogin(string email, string password)
         {
-            (string UserId, string Role)? userDetail = null;
-
             try
             {
                 var client = new MongoClient(connectionString);
                 var database = client.GetDatabase(databaseName);
+                var userCollection = database.GetCollection<User>("User");
 
-                // Check in the Commissioner collection
-                var commisionerCollection = database.GetCollection<BsonDocument>(this.commisionerCollection);
-                var commissionerFilter = Builders<BsonDocument>.Filter.Eq("Email", email);
-                var commissioner = commisionerCollection.Find(commissionerFilter).FirstOrDefault();
+                var user = userCollection.Find(u => u.Email == email).FirstOrDefault();
 
-                if (commissioner != null)
+                if (user != null)
                 {
-                    string storedHashedPassword = commissioner["Password"].AsString;
-                    if (userData.HashPassword(password) == storedHashedPassword)
+                    string storedHashedPassword = user.Password;
+                    if (storedHashedPassword == userData.HashPassword(password)) 
                     {
-                        userDetail = (commissioner["_id"].ToString(), "Commissioner");
-                        return userDetail;
-                    }
-                }
-
-                // Check in the Voter collection
-                var voterCollection = database.GetCollection<BsonDocument>(this.voterCollection);
-                var voterFilter = Builders<BsonDocument>.Filter.Eq("Email", email);
-                var voter = voterCollection.Find(voterFilter).FirstOrDefault();
-
-                if (voter != null)
-                {
-                    string storedHashedPassword = voter["Password"].AsString;
-                    if (userData.HashPassword(password) == storedHashedPassword)
-                    {
-                        userDetail = (voter["_id"].ToString(), "Voter");
-                        return userDetail;
+                        return (user.Email, user.Role);
                     }
                 }
             }
@@ -128,9 +92,8 @@ namespace ElectionSystems
                 ErrorMessageLabel.Text = "An error occurred: " + ex.Message;
             }
 
-            return userDetail;
-        }//_________________________________________________________________________________________________________________
-
+            return null;
+        }
 
         /// <summary>
         /// Method to cancel login operation.

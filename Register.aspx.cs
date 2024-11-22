@@ -17,17 +17,8 @@ namespace ElectionSystems
         /// </summary>
         User userData = new User();
 
-
-        /// <summary>
-        /// declaring and instantiating connection string
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-       // private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Mayra\\source\\repos\\ElectionSystems\\App_Data\\SystemDatabase.mdf;Integrated Security=True";
-
         private readonly IMongoCollection<User> userCollection;
         private readonly IMongoCollection<User> commissionerCollection;
-
 
         public Register()
         {
@@ -62,6 +53,14 @@ namespace ElectionSystems
                 return;
             }
 
+            // Checking if the selected role is "Voter", and prevent registration if it is
+            if (DropDownListRole.SelectedValue == "Voter")
+            {
+                ErrorMessageLabel.Text = "Voters cannot register, please contact our admin and commission member.";
+                ClearFields();
+                return;
+            }
+
             // Filling the text boxes with form data
             userData.Email = EmailTxtBox.Text;
             userData.Name = NameTxtBox.Text;
@@ -84,17 +83,9 @@ namespace ElectionSystems
                 return;
             }
 
-            // Performing validation to ensure only commissioners can register users.
-            if (DropDownListRole.Text.Equals("Voter"))
-            {
-                ErrorMessageLabel.Text = "Voters are not allowed to register, please register with a member of our commission.";
-                return;
-            }
-
-            // Hash the password
+            // Hash the password before saving
             userData.SetPassword(password);
 
-            // Creating user and commissioner objects
             var newUser = new User
             {
                 Email = userData.Email,
@@ -105,20 +96,10 @@ namespace ElectionSystems
                 Address = userData.Address
             };
 
-            var newCommissioner = new User
-            {
-                Email = userData.Email,
-                Name = userData.Name,
-                Age = age,
-                Role = userData.Role,
-                Password = userData.Password, // Hashed password
-                Address = userData.Address
-            };
-
+            // Proceed with registration
             try
             {
-                RegisterUser(newUser, newCommissioner);
-                // Using a startup script to redirect after 2 seconds
+                RegisterUser(newUser);
                 SucessMessageLabel.Text = "Registration successful....Loading";
                 string script = "setTimeout(function(){ window.location = 'Login.aspx'; }, 2000);";
                 ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
@@ -129,28 +110,17 @@ namespace ElectionSystems
             }
         }
 
-        private void RegisterUser(User newUser, User newCommissioner)
+
+        private void RegisterUser(User newUser)
         {
-            using (var session = new MongoClient("mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true").StartSession())
-            {
-                session.StartTransaction();
+            var client = new MongoClient("mongodb+srv://st10036905:helloWorld@firstcluster.l38xc.mongodb.net/test?retryWrites=true&w=majority&tls=true");
+            var database = client.GetDatabase("ElectionSystemDB");
+            var userCollection = database.GetCollection<User>("User");
 
-                try
-                {
-                    userCollection.InsertOne(session, newUser);
-
-                    commissionerCollection.InsertOne(session, newCommissioner);
-
-                    session.CommitTransaction();
-                }
-                catch (Exception)
-                {
-                    session.AbortTransaction();
-                    throw;
-                }
-              
-            }
+            // Insert the user into the database
+            userCollection.InsertOne(newUser);
         }
+
 
         /// <summary>
         /// Button user selects to redirect to cancel the operation.
@@ -159,17 +129,24 @@ namespace ElectionSystems
         /// <param name="e"></param>
         protected void CancelBtn_Click(object sender, EventArgs e)
         {
-            EmailTxtBox.Text = "";
-            NameTxtBox.Text = "";
-            DropDownListRole.SelectedIndex = -1;
-            PasswordTxtBox.Text = "";
-            ReEnterPasswordTxtBox.Text = "";
-
+           
+            ClearFields();
             //Using a startup script to redirect after 2 seconds
             ErrorMessageLabel.Text = "Operation being canceled...";
             string script = "setTimeout(function(){ window.location = 'Default.aspx'; }, 2000);";
             ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
         }//_____________________________________________________________________________________________________________
+
+        private void ClearFields()
+        {
+            EmailTxtBox.Text = "";
+            NameTxtBox.Text = "";
+            AgeTxtBox.Text = "";
+            DropDownListRole.SelectedIndex = -1;
+            PasswordTxtBox.Text = "";
+            ReEnterPasswordTxtBox.Text = "";
+            AddressTxtBox.Text = "";
+        }
 
     }
  }

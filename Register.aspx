@@ -105,7 +105,7 @@
 <body>
     <form id="form1" runat="server">
         <div class="register-container">
-            <h1>Electoral Systems Registration Form</h1>
+            <h1>Admin Registration Form</h1>
             <label for="EmailTxtBox">E-mail:</label>
             <asp:TextBox ID="EmailTxtBox" runat="server" placeholder="Enter email" TextMode="Email"></asp:TextBox>
 
